@@ -1,0 +1,19 @@
+column,type,description,validation_or_notes
+order_id,string,Unique identifier of an order,Use for deduplication
+order_date,date,Date the order was placed,"YYYY-MM-DD, should equal the batch date"
+order_hour,integer,Hour when order was placed,0–23
+customer_region,category,Delivery region,Cairo / Giza / Alexandria / Delta / Upper_Egypt / Canal
+warehouse_id,category,Fulfillment warehouse,WH-01 to WH-04
+shipping_method,category,Shipping service,"Standard / Express / Same_Day, variations and missing values possible"
+distance_km,float,Estimated trip distance,Positive or missing; some invalid negatives
+items_count,integer,Number of items,Positive integer; some invalid zeros
+package_weight_kg,float,Package weight,Positive
+order_value_egp,float,Order value in Egyptian pounds,Positive; some invalid negatives
+promised_delivery_days,integer,Delivery promise in days,At least 1
+warehouse_load_pct,float,Warehouse workload level at order placement,"Percentage, some missing"
+weather_risk_level,category,Forecast disruption level at order placement,"Low / Medium / High, can be missing"
+carrier_on_time_rate,float,Historical carrier reliability at order placement,"Between 0 and 1, can be missing"
+late_delivery,int (target),Was delivery late?,0 = on time; 1 = late
+distance_per_promised_day,float (engineered),Estimated trip distance per promised delivery day,Engineered in Gold (distance_km / promised_delivery_days)
+weight_per_item,float (engineered),Average weight per item in package,Engineered in Gold (package_weight_kg / items_count)
+is_rush_order,int (engineered),Binary indicator for urgent orders,Engineered in Gold (promised_delivery_days == 1 or shipping_method == Same_Day)

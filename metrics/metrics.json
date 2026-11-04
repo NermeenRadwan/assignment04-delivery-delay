@@ -1,0 +1,38 @@
+{
+  "model_name": "RandomForestClassifier",
+  "split_strategy": "stratified_split_80_20",
+  "total_records": 1017,
+  "train_records": 813,
+  "test_records": 204,
+  "date_range": [
+    "2026-10-01",
+    "2026-11-03"
+  ],
+  "features": {
+    "numeric": [
+      "order_hour",
+      "distance_km",
+      "items_count",
+      "package_weight_kg",
+      "order_value_egp",
+      "promised_delivery_days",
+      "warehouse_load_pct",
+      "carrier_on_time_rate",
+      "distance_per_promised_day",
+      "weight_per_item",
+      "is_rush_order"
+    ],
+    "categorical": [
+      "customer_region",
+      "warehouse_id",
+      "shipping_method",
+      "weather_risk_level"
+    ]
+  },
+  "metrics": {
+    "accuracy": 0.7745,
+    "precision": 0.5455,
+    "recall": 0.1277,
+    "f1_score": 0.2069
+  }
+}

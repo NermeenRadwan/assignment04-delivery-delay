@@ -1,0 +1,29 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+
+# Airflow local logs
+logs/
+airflow.cfg
+airflow.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Intermediate ML cache
+data/ml/*.joblib
