@@ -1,12 +1,12 @@
 {
   "model_name": "RandomForestClassifier",
   "split_strategy": "stratified_split_80_20",
-  "total_records": 1017,
-  "train_records": 813,
-  "test_records": 204,
+  "total_records": 1455,
+  "train_records": 1164,
+  "test_records": 291,
   "date_range": [
     "2026-10-01",
-    "2026-11-03"
+    "2026-11-04"
   ],
   "features": {
     "numeric": [
@@ -30,9 +30,9 @@
     ]
   },
   "metrics": {
-    "accuracy": 0.7745,
-    "precision": 0.5455,
-    "recall": 0.1277,
-    "f1_score": 0.2069
+    "accuracy": 0.7388,
+    "precision": 0.2609,
+    "recall": 0.0923,
+    "f1_score": 0.1364
   }
 }
