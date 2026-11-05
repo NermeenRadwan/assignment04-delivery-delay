@@ -9,7 +9,7 @@ import glob
 import json
 import os
 import shutil
-import sys
+
 import joblib
 import pandas as pd
 from sklearn.compose import ColumnTransformer
@@ -46,15 +46,20 @@ def load_gold_dataset(gold_dir: str = "data/gold") -> pd.DataFrame:
     """Load all available validated daily Gold CSV files."""
     gold_files = sorted(glob.glob(os.path.join(gold_dir, "orders_*.csv")))
     if not gold_files:
-        raise FileNotFoundError(f"No Gold CSV files found in {gold_dir}. Run ETL pipeline first.")
+        raise FileNotFoundError(
+            f"No Gold CSV files found in {gold_dir}. Run ETL pipeline first."
+        )
 
     dfs = [pd.read_csv(f) for f in gold_files]
     dataset = pd.concat(dfs, ignore_index=True)
-    print(f"[Data Loader] Loaded {len(gold_files)} Gold files ({len(dataset)} total records).")
+    print(
+        f"[Data Loader] Loaded {len(gold_files)} Gold files ({len(dataset)} total records)."
+    )
     return dataset
 
 
 # --- Modular steps for Airflow orchestration ---
+
 
 def step_load_gold_data(gold_dir: str = "data/gold", ml_dir: str = "data/ml") -> str:
     """Step 1: Load gold data, split into train and test sets, and stage in data/ml."""
@@ -74,7 +79,9 @@ def step_load_gold_data(gold_dir: str = "data/gold", ml_dir: str = "data/ml") ->
     train_df.to_csv(train_path, index=False)
     test_df.to_csv(test_path, index=False)
 
-    print(f"[Airflow: load_gold_data] Staged train ({len(train_df)} rows) and test ({len(test_df)} rows) in {ml_dir}")
+    print(
+        f"[Airflow: load_gold_data] Staged train ({len(train_df)} rows) and test ({len(test_df)} rows) in {ml_dir}"
+    )
     return train_path
 
 
@@ -95,7 +102,9 @@ def step_train_model(ml_dir: str = "data/ml") -> str:
     num_cols = [c for c in NUMERIC_FEATURES if c in X_train.columns]
     cat_cols = [c for c in CATEGORICAL_FEATURES if c in X_train.columns]
 
-    numeric_transformer = Pipeline(steps=[("imputer", SimpleImputer(strategy="median"))])
+    numeric_transformer = Pipeline(
+        steps=[("imputer", SimpleImputer(strategy="median"))]
+    )
     categorical_transformer = Pipeline(
         steps=[
             ("imputer", SimpleImputer(strategy="most_frequent")),
@@ -131,8 +140,7 @@ def step_train_model(ml_dir: str = "data/ml") -> str:
 
 
 def step_evaluate_model(
-    ml_dir: str = "data/ml",
-    metrics_path: str = "metrics/metrics.json"
+    ml_dir: str = "data/ml", metrics_path: str = "metrics/metrics.json"
 ) -> dict:
     """Step 3: Evaluate fitted model on staged test data and export metrics JSON."""
     temp_model_path = os.path.join(ml_dir, "temp_model.joblib")
@@ -157,7 +165,14 @@ def step_evaluate_model(
     rec = float(recall_score(y_test, y_pred, zero_division=0))
     f1 = float(f1_score(y_test, y_pred, zero_division=0))
 
-    dates = sorted(list(set(train_df["order_date"].unique().tolist() + test_df["order_date"].unique().tolist())))
+    dates = sorted(
+        list(
+            set(
+                train_df["order_date"].unique().tolist()
+                + test_df["order_date"].unique().tolist()
+            )
+        )
+    )
     date_min = dates[0] if dates else "unknown"
     date_max = dates[-1] if dates else "unknown"
 
@@ -184,14 +199,16 @@ def step_evaluate_model(
     with open(metrics_path, "w", encoding="utf-8") as f:
         json.dump(metrics_payload, f, indent=2)
 
-    print(f"[Airflow: evaluate_model] Metrics: Acc={acc:.4f}, Prec={prec:.4f}, Rec={rec:.4f}, F1={f1:.4f}")
+    print(
+        f"[Airflow: evaluate_model] Metrics: Acc={acc:.4f}, Prec={prec:.4f}, Rec={rec:.4f}, F1={f1:.4f}"
+    )
     print(f"[Airflow: evaluate_model] Saved metrics -> {metrics_path}")
     return metrics_payload
 
 
 def step_save_model(
     ml_dir: str = "data/ml",
-    final_model_path: str = "models/delivery_delay_model.joblib"
+    final_model_path: str = "models/delivery_delay_model.joblib",
 ) -> str:
     """Step 4: Promote and persist final model to models directory."""
     temp_model_path = os.path.join(ml_dir, "temp_model.joblib")
@@ -222,7 +239,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train Late Delivery Classifier")
     parser.add_argument("--gold-dir", type=str, default="data/gold")
     parser.add_argument("--ml-dir", type=str, default="data/ml")
-    parser.add_argument("--model-path", type=str, default="models/delivery_delay_model.joblib")
+    parser.add_argument(
+        "--model-path", type=str, default="models/delivery_delay_model.joblib"
+    )
     parser.add_argument("--metrics-path", type=str, default="metrics/metrics.json")
     parser.add_argument(
         "--step",

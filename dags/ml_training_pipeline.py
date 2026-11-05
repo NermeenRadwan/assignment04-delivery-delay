@@ -5,9 +5,9 @@ load_gold_data -> train_model -> evaluate_model -> save_model
 Keeps core ML logic in src/train.py and orchestrates via Airflow.
 """
 
-from datetime import datetime, timedelta
 import os
 import sys
+from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -71,10 +71,4 @@ with DAG(
 
     # Task dependencies:
     # load_gold_data -> train_model -> evaluate_model -> save_model
-    (
-        load_gold_data_task
-        >> train_model_task
-        >> evaluate_model_task
-        >> save_model_task
-    )
-
+    (load_gold_data_task >> train_model_task >> evaluate_model_task >> save_model_task)

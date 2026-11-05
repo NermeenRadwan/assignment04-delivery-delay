@@ -5,9 +5,9 @@ extract_to_bronze -> transform_to_silver -> prepare_gold -> validate_gold
 Date-aware using logical execution date (ds), idempotent, and configured with retries=2.
 """
 
-from datetime import datetime, timedelta
 import os
 import sys
+from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -20,8 +20,8 @@ if PROJECT_ROOT not in sys.path:
 
 from src.etl import (
     extract_to_bronze,
-    transform_to_silver,
     prepare_gold,
+    transform_to_silver,
     validate_gold,
 )
 
@@ -108,4 +108,3 @@ with DAG(
         >> prepare_gold_task
         >> validate_gold_task
     )
-
